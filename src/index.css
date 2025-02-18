@@ -1,0 +1,20 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body{
+    background-color: rgb(39, 39, 53);
+}
+
+@keyframes moveBackground {
+    0% {
+      background-position: center 0px;
+    }
+    100% {
+      background-position: center -100%;
+    }
+  }
+  
+  .spinning {
+    animation: moveBackground 0.3s linear infinite;
+  }
