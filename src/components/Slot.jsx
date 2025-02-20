@@ -131,16 +131,22 @@ function Slot() {
         <p className='text-white'>Winrate : {winrate}%</p>
         <input type="range" min="0" max="100" value={winrate} onChange={changeWinrate}/>
       </div>
-      <div className='bg-slate-500 w-[300px] h-[130px] justify-self-center'>
+      <div className='bg-slate-500 w-[300px] h-[295px] justify-self-center'>
         <div className='flex flex-row justify-evenly'>
-          <div className={`${spin ? "spinning bg-[url(/public/fruity.png)] bg-[center_-0px] bg-repeat-y" : "bg-white"} w-[125px] h-[100px] m-3`}>
+          <div className={`${spin ? "spinning bg-[url(/public/fruity.png)] bg-[center_-0px] bg-repeat-y" : "bg-white"} w-[125px] h-[265px] m-3`}>
+            <p className='flex items-center justify-center mt-2 text-[50px]'>{spin ? "" : rollRes[0]}</p>
+            <p className='flex items-center justify-center mt-2 text-[50px]'>{spin ? "" : rollRes[0]}</p>
             <p className='flex items-center justify-center mt-2 text-[50px]'>{spin ? "" : rollRes[0]}</p>
           </div>
-          <div className={`${spin ? "spinning bg-[url(/public/fruity.png)] bg-[center_-0px] bg-repeat-y" : "bg-white"} w-[125px] h-[100px] m-3`}>
+          <div className={`${spin ? "spinning bg-[url(/public/fruity.png)] bg-[center_-0px] bg-repeat-y" : "bg-white"} w-[125px] h-[265px] m-3`}>
             <p className='flex items-center justify-center mt-2 text-[50px]'>{spin ? "" : rollRes[1]}</p>
+            <p className='flex items-center justify-center mt-2 text-[50px]'>{spin ? "" : rollRes[0]}</p>
+            <p className='flex items-center justify-center mt-2 text-[50px]'>{spin ? "" : rollRes[0]}</p>
           </div>
-          <div className={`${spin ? "spinning bg-[url(/public/fruity.png)] bg-[center_-0px] bg-repeat-y" : "bg-white"} w-[125px] h-[100px] m-3`}>
+          <div className={`${spin ? "spinning bg-[url(/public/fruity.png)] bg-[center_-0px] bg-repeat-y" : "bg-white"} w-[125px] h-[265px] m-3`}>
             <p className='flex items-center justify-center mt-2 text-[50px]'>{spin ? "" : rollRes[2]}</p>
+            <p className='flex items-center justify-center mt-2 text-[50px]'>{spin ? "" : rollRes[0]}</p>
+            <p className='flex items-center justify-center mt-2 text-[50px]'>{spin ? "" : rollRes[0]}</p>
           </div>
         </div>
         <div className='flex items-center justify-center mt-5'>

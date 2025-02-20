@@ -16,5 +16,5 @@ body{
   }
   
   .spinning {
-    animation: moveBackground 0.3s linear infinite;
+    animation: moveBackground 0.1s linear infinite;
   }
