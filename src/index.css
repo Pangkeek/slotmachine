@@ -2,9 +2,34 @@
 @tailwind components;
 @tailwind utilities;
 
-body{
-    background-color: rgb(39, 39, 53);
+html, body {
+  height: 100%; /* Make sure both html and body take full height of the viewport */
+  margin: 0; /* Remove default margin */
 }
+
+/* For mobile (default) */
+body {
+  background-image: url('/bg.png');
+  background-size: cover; /* Ensure the background covers the viewport */
+  background-position: center;
+  background-attachment: fixed;
+}
+
+/* Prevent scrolling on desktops */
+@media (min-width: 768px) {
+  html, body {
+      height: 100%; /* Ensure full height on larger screens */
+      overflow: hidden; /* Prevent scrolling */
+  }
+
+  body {
+      background-size: cover;
+      background-position: center center;
+  }
+}
+
+
+
 
 @keyframes moveBackground {
     0% {

@@ -364,43 +364,56 @@ function Slot() {
   ];
 
   return (
-    <div className='grid grid-cols-3'>
+    <div className='grid grid-rows-3 md:grid-cols-3'>
       <div>
-        <div className="flex flex-col items-center text-white min-h-screen p-6">
-          <h2 className="text-2xl font-bold mb-4">🎰 Payout Table 🎰</h2>
-          <div className="overflow-x-auto">
-            <table className="w-full max-w-md border border-gray-700 text-center">
-            <thead>
-              <tr className="bg-gray-800">
-                <th className="p-3 border border-gray-700">Symbols</th>
-                <th className="p-3 border border-gray-700">Bet 1</th>
-                <th className="p-3 border border-gray-700">Bet 2</th>
-                <th className="p-3 border border-gray-700">Bet 3</th>
-              </tr>
-            </thead>
-            <tbody>
-              {payouts.map((row, index) => (
-                <tr key={index} className="border border-gray-700 hover:bg-gray-700">
-                  <td className="p-3 text-xl">{row.symbols}</td>
-                  <td className="p-3">{row.bet1}x</td>
-                  <td className="p-3">{row.bet2}x</td>
-                  <td className="p-3">{row.bet3}x</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div>
+        <div>
+          <img src='/Symbols (1).png'/>
         </div>
-        <h2 className="text-2xl font-bold mb-4 mt-12">Win Pettern</h2>
-        <div className='flex'>
-          <img src={'/pettern1.png'} alt="My Description" className='w-[75px] m-2'/>
-          <img src={'/pettern2.png'} alt="My Description" className='w-[75px] m-2'/>
-          <img src={'/pettern3.png'} alt="My Description" className='w-[75px] m-2'/>
-          <img src={'/pettern4.png'} alt="My Description" className='w-[75px] m-2'/>
-          <img src={'/pettern6.png'} alt="My Description" className='w-[75px] m-2'/>
         </div>
-      </div>
+        <div>
+          <img src='/Win Pattern (1).png'/>
+        </div>
       </div>
       <div className=''>  
+        <div className='relative my-[125px] mx-auto flex justify-center items-center'>
+          {/* Frame positioned around the slot */}
+          <img 
+            src='/slotframe.png' 
+            className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[512px] h-[512px] object-contain z-10 pointer-events-none'
+          />
+          
+          {/* Slot container with better centering */}
+          <div className='z-0 flex items-center justify-center'>
+            <div className='flex flex-row justify-center ml-[37px] mt-[20px]'>
+              <div className={`${spin ? "spinning bg-[url(/fruity.png)] bg-[center_-0px] bg-repeat-y" : "bg-white"} w-[80px] h-[265px]`}>
+                <p className='flex items-center justify-center mt-2 text-[50px]'>{spin ? "" : rollRes[0]}</p>
+                <p className='flex items-center justify-center mt-2 text-[50px]'>{spin ? "" : rollRes[3]}</p>
+                <p className='flex items-center justify-center mt-2 text-[50px]'>{spin ? "" : rollRes[6]}</p>
+              </div>
+              <div className={`${spin ? "spinning bg-[url(/fruity.png)] bg-[center_-0px] bg-repeat-y" : "bg-white"} w-[80px] h-[250px]`}>
+                <p className='flex items-center justify-center mt-2 text-[50px]'>{spin ? "" : rollRes[1]}</p>
+                <p className='flex items-center justify-center mt-2 text-[50px]'>{spin ? "" : rollRes[4]}</p>
+                <p className='flex items-center justify-center mt-2 text-[50px]'>{spin ? "" : rollRes[7]}</p>
+              </div>
+              <div className={`${spin ? "spinning bg-[url(/fruity.png)] bg-[center_-0px] bg-repeat-y" : "bg-white"} w-[80px] h-[250px]`}>
+                <p className='flex items-center justify-center mt-2 text-[50px]'>{spin ? "" : rollRes[2]}</p>
+                <p className='flex items-center justify-center mt-2 text-[50px]'>{spin ? "" : rollRes[5]}</p>
+                <p className='flex items-center justify-center mt-2 text-[50px]'>{spin ? "" : rollRes[8]}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="w-[244px] bg-[url(/tablebet.png)] flex justify-center items-center mx-auto">
+          <img src="/bet1 1.png" onClick={bet1} disabled={spin} className={`${bet == 1 ? "" : "opacity-50"}`}/>
+          <img src="/BET 2 1.png" onClick={bet2} disabled={spin} className={`${bet == 2 ? "" : "opacity-50"}`} />
+          <img src="/BET 3 1.png" onClick={bet3} disabled={spin} className={`${bet == 3 ? "" : "opacity-50"}`} />
+        </div>
+        <div className='flex items-center justify-center mt-5'>
+          <button onClick={Spin} disabled={spin} className="bg-red-600 text-white p-3 font-black outline outline-sky-500" type="button">
+            SPIN!
+          </button>
+        </div>
         <div className='flex justify-center m-6'>
           <p className="text-white">Cheat</p>
           <div onClick={cheatSwitch} disabled={spin} className='w-[60px] h-[25px] bg-slate-700 flex items-center'>
@@ -416,41 +429,6 @@ function Slot() {
           <input type='text' value={autoAmount} onChange={(e) => setAutoAmount(e.target.value)}></input>
           <button onClick={() => autoSpin(autoAmount)} className='text-white ml-2'>
             AUTO
-          </button>
-        </div>
-        <div className='bg-slate-500 w-[300px] h-[295px] justify-self-center'>
-          <div className='flex flex-row justify-evenly'>
-            <div className={`${spin ? "spinning bg-[url(/fruity.png)] bg-[center_-0px] bg-repeat-y" : "bg-white"} w-[125px] h-[265px] m-3`}>
-              <p className='flex items-center justify-center mt-2 text-[50px]'>{spin ? "" : rollRes[0]}</p>
-              <p className='flex items-center justify-center mt-2 text-[50px]'>{spin ? "" : rollRes[3]}</p>
-              <p className='flex items-center justify-center mt-2 text-[50px]'>{spin ? "" : rollRes[6]}</p>
-            </div>
-            <div className={`${spin ? "spinning bg-[url(/public/fruity.png)] bg-[center_-0px] bg-repeat-y" : "bg-white"} w-[125px] h-[265px] m-3`}>
-              <p className='flex items-center justify-center mt-2 text-[50px]'>{spin ? "" : rollRes[1]}</p>
-              <p className='flex items-center justify-center mt-2 text-[50px]'>{spin ? "" : rollRes[4]}</p>
-              <p className='flex items-center justify-center mt-2 text-[50px]'>{spin ? "" : rollRes[7]}</p>
-            </div>
-            <div className={`${spin ? "spinning bg-[url(/public/fruity.png)] bg-[center_-0px] bg-repeat-y" : "bg-white"} w-[125px] h-[265px] m-3`}>
-              <p className='flex items-center justify-center mt-2 text-[50px]'>{spin ? "" : rollRes[2]}</p>
-              <p className='flex items-center justify-center mt-2 text-[50px]'>{spin ? "" : rollRes[5]}</p>
-              <p className='flex items-center justify-center mt-2 text-[50px]'>{spin ? "" : rollRes[8]}</p>
-            </div>
-          </div>
-        </div>
-        <div className='flex items-center justify-center mt-5'>
-          <button onClick={bet1} disabled={spin} className={`${bet == 1 ? "bg-red-600" : "opacity-50"} text-white p-3 font-black outline outline-sky-500`} type="button">
-            BET 1
-          </button>
-          <button onClick={bet2} disabled={spin} className={`${bet == 2 ? "bg-red-600" : "opacity-50"} text-white p-3 font-black outline outline-sky-500`} type="button">
-            BET 2
-          </button>
-          <button onClick={bet3} disabled={spin} className={`${bet == 3 ? "bg-red-600" : "opacity-50"} text-white p-3 font-black outline outline-sky-500`} type="button">
-            BET 3
-          </button>
-        </div>
-        <div className='flex items-center justify-center mt-5'>
-          <button onClick={Spin} disabled={spin} className="bg-red-600 text-white p-3 font-black outline outline-sky-500" type="button">
-            SPIN!
           </button>
         </div>
       </div>
