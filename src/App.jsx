@@ -7,7 +7,6 @@ function App() {
   return (
     <>
       <div className="container mx-auto">
-        <p className='text-white font-black text-center text-[50px] m-5'>SLOT Simulator</p>
         <Slot />
       </div>
     </>

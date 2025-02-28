@@ -296,8 +296,8 @@ function Slot() {
       {
         label: "Winrate",
         data: graphData.winrates,
-        borderColor: "white",
-        backgroundColor: "rgba(0, 0, 255, 0.2)",
+        borderColor: "white", // White line
+        backgroundColor: "rgba(255, 255, 255, 0.2)", // Light white fill
         borderWidth: 2,
         pointRadius: 0,
         fill: true,
@@ -311,28 +311,37 @@ function Slot() {
       {
         label: "Profit",
         data: graphData.profits,
-        borderColor: "white",
-        backgroundColor: "rgba(0, 0, 255, 0.2)",
+        borderColor: "white", // White line
+        backgroundColor: "rgba(255, 255, 255, 0.2)", // Light white fill
         borderWidth: 2,
         pointRadius: 0,
         fill: true,
       },
     ],
   };
-
+  
   const options = {
     responsive: true,
     maintainAspectRatio: true,
+    plugins: {
+      legend: {
+        labels: {
+          color: "white", // Makes legend text white
+        },
+      },
+    },
     scales: {
       x: {
-        title: { display: true, text: "Index" },
-        ticks: { stepSize: 1 },
+        title: { display: true, text: "Index", color: "white" }, // White axis title
+        ticks: { stepSize: 1, color: "white" }, // White tick labels
+        grid: { color: "rgba(255, 255, 255, 0.2)" }, // Light white grid lines
       },
       y: {
-        title: { display: true, text: "Winrate" },
+        title: { display: true, text: "Winrate", color: "white" }, // White axis title
         min: 0,
         max: 100,
-        ticks: { stepSize: 10 },
+        ticks: { stepSize: 10, color: "white" }, // White tick labels
+        grid: { color: "rgba(255, 255, 255, 0.2)" }, // Light white grid lines
       },
     },
   };
@@ -340,16 +349,25 @@ function Slot() {
   const options2 = {
     responsive: true,
     maintainAspectRatio: true,
+    plugins: {
+      legend: {
+        labels: {
+          color: "white", // Make legend text white
+        },
+      },
+    },
     scales: {
       x: {
-        title: { display: true, text: "Index" },
-        ticks: { stepSize: 1 },
+        title: { display: true, text: "Index", color: "white" }, // White axis title
+        ticks: { stepSize: 1, color: "white" }, // White tick labels
+        grid: { color: "rgba(255, 255, 255, 0.2)" }, // Light white grid lines
       },
       y: {
-        title: { display: true, text: "Profit" },
+        title: { display: true, text: "Profit", color: "white" }, // White axis title
         min: Math.min(...graphData.profits, 0),
         max: Math.max(...graphData.profits, 0) + 100,
-        ticks: { stepSize: 10 },
+        ticks: { stepSize: 10, color: "white" }, // White tick labels
+        grid: { color: "rgba(255, 255, 255, 0.2)" }, // Light white grid lines
       },
     },
   };
@@ -364,18 +382,9 @@ function Slot() {
   ];
 
   return (
-    <div className='grid grid-rows-3 md:grid-cols-3'>
-      <div>
-        <div>
-        <div>
-          <img src='/Symbols (1).png'/>
-        </div>
-        </div>
-        <div>
-          <img src='/Win Pattern (1).png'/>
-        </div>
-      </div>
-      <div className=''>  
+    <div className='grid grid-rows-3 md:grid-cols-3 gap-4'>
+      <div className='mr-6 md:order-2'>  
+        <img src='logoslot.png'/>
         <div className='relative my-[125px] mx-auto flex justify-center items-center'>
           {/* Frame positioned around the slot */}
           <img 
@@ -404,49 +413,62 @@ function Slot() {
             </div>
           </div>
         </div>
-        <div className="w-[244px] bg-[url(/tablebet.png)] flex justify-center items-center mx-auto">
-          <img src="/bet1 1.png" onClick={bet1} disabled={spin} className={`${bet == 1 ? "" : "opacity-50"}`}/>
-          <img src="/BET 2 1.png" onClick={bet2} disabled={spin} className={`${bet == 2 ? "" : "opacity-50"}`} />
-          <img src="/BET 3 1.png" onClick={bet3} disabled={spin} className={`${bet == 3 ? "" : "opacity-50"}`} />
-        </div>
-        <div className='flex items-center justify-center mt-5'>
-          <button onClick={Spin} disabled={spin} className="bg-red-600 text-white p-3 font-black outline outline-sky-500" type="button">
+        <div className="flex justify-center items-center">
+          <div className="w-[244px] bg-[url(/tablebet.png)] flex justify-between items-center">
+            <img src="/bet1 1.png" onClick={bet1} disabled={spin} className={`${bet == 1 ? "" : "opacity-50"}`} />
+            <img src="/BET 2 1.png" onClick={bet2} disabled={spin} className={`${bet == 2 ? "" : "opacity-50"}`} />
+            <img src="/BET 3 1.png" onClick={bet3} disabled={spin} className={`${bet == 3 ? "" : "opacity-50"}`} />
+          </div>
+          <button onClick={Spin} disabled={spin} className="bg-cyan-400 text-sky-800 p-3 font-black outline outline-white ml-4 rounded-full" type="button">
             SPIN!
           </button>
         </div>
         <div className='flex justify-center m-6'>
-          <p className="text-white">Cheat</p>
+          <p className="text-sky-800 font-black">Cheat</p>
           <div onClick={cheatSwitch} disabled={spin} className='w-[60px] h-[25px] bg-slate-700 flex items-center'>
             <div className='bg-green-500 w-[30px] h-[25px]'></div>
             <div className={`w-[30px] h-[30px] bg-white ${cheat ? '' : 'translate-x-[-30px]'} transition-all`}></div>
           </div>
         </div>
         <div className={`${cheat ? '':'invisible'} flex justify-center`}>
-          <p className='text-white'>Winrate : {winrate}%</p>
+          <p className='text-sky-800'>Winrate : {winrate}%</p>
           <input type="range" min="0" max="100" value={winrate} onChange={changeWinrate}/>
         </div>
         <div className='flex justify-center m-4'>
           <input type='text' value={autoAmount} onChange={(e) => setAutoAmount(e.target.value)}></input>
-          <button onClick={() => autoSpin(autoAmount)} className='text-white ml-2'>
+          <button onClick={() => autoSpin(autoAmount)} className='text-sky-800 ml-2 font-black'>
             AUTO
           </button>
         </div>
       </div>
-      <div>
-        <div className='text-white'>
+      <div className='flex flex-col justify-center items-center md:items-end'>
+        <div>
+        <div>
+          <img src='/Symbols (1).png'/>
+        </div>
+        </div>
+        <div className='mt-8'>
+          <img src='/Win Pattern (1).png'/>
+        </div>
+      </div>
+      <div className='flex flex-col justify-center md:order-3'>
+        <div className='text-white bg-blue-500/30 backdrop-blur-md border border-blue-500/50 rounded-lg p-4'>
           <p>income : {income}</p>
           <p>outcome : {outcome}</p>
           <p>profit : {profit}</p>
-          <Line data={data2} options={options2} className='my-8'/>
+          <div className='w-[400px]'>
+            <Line data={data2} options={options2} className='my-8'/>
+          </div>
           <p>rolls count : {rollscount}</p>
           <p>win count : {wincount}</p>
           <p>current winrate : {currentwinrate}%</p>
-          <Line data={data} options={options} className='my-8'/>
+          <div className='w-[400px]'>
+            <Line data={data} options={options} className='my-8'/>
+          </div>
           <button onClick={reset} className="bg-white text-black p-2 m-4 font-black outline outline-sky-500" type="button">reset</button>
         </div>
       </div>
     </div>
-
   )
 }
 
