@@ -1,10 +1,13 @@
 import React from 'react'
 import { useState,useEffect } from 'react';
-import { Line } from "react-chartjs-2";
-import { Chart, LineController, LineElement, PointElement, LinearScale, CategoryScale } from "chart.js";
+
+//นำเข้า libraly graph
+import { Line , Bar } from "react-chartjs-2";
+import { Chart, LineController, LineElement, PointElement, LinearScale, CategoryScale, BarController, BarElement } from "chart.js";
 
 
 function Slot() {
+  //สร้าง State
   const [spin,setSpin] = useState(false)
   const [rollRes,setRollres] = useState(['🍒','🍋','🍉','🍊','🍇','🔔','🍒','🍋','🍉' ])
   const [bet,setBet] = useState(1)
@@ -28,15 +31,41 @@ function Slot() {
     profits: [],
     labels: []
   });
+  const [symbolCounts, setSymbolCounts] = useState({
+    '🍒': 0,
+    '🍋': 0,
+    '🍉': 0,
+    '🍊': 0,
+    '🍇': 0,
+    '🔔': 0
+  });
 
+  //อัพเดตความถี่สัญลักษณ์ bar chart
+  useEffect(() => {
+    if (rollscount > 0) {
+      const newCounts = { ...symbolCounts };
+      
+      rollRes.forEach(symbol => {
+        if (newCounts[symbol] !== undefined) {
+          newCounts[symbol] += 1;
+        }
+      });
+      
+      setSymbolCounts(newCounts);
+    }
+  }, [rollRes, rollscount]);
+
+  //ตรวจสอบการชนะทุกครั้งที่ผลการสุ่มเปลี่ยน
   useEffect(() => {
     checkwin();
   }, [rollRes]);
 
+  //อัพเดตกำไร
   useEffect(() => {
     setProfit(income - outcome);
   }, [income, outcome, rollscount]);
 
+  //อัพเดต winrate
   useEffect(() => {
     if (rollscount === 0) {
       setCurrentwinrate(0)
@@ -45,6 +74,7 @@ function Slot() {
     }
   }, [wincount, rollscount])
 
+  //อัพเดตข้อมูล เพื่อ plot graph
   useEffect(() => {
     if (rollscount > 0) {
       const newWinrate = (wincount / rollscount) * 100;
@@ -58,14 +88,17 @@ function Slot() {
     }
   }, [rollscount, wincount, income, outcome]);
 
+  //อัพเดต graph
   useEffect(() => {
     if (!auto && !spin) {
       setGraphData(tempData);
     }
   }, [auto, spin]);
 
+  //สัณลักษณ์ทั้งหมด
   const symbol = ['🍒','🍋','🍉','🍊','🍇','🔔']
 
+  //หมุน
   const Spin = ()=>{
     setOutcome(outcome+bet)
     setSpin(true)
@@ -83,6 +116,7 @@ function Slot() {
     },1000)
   }
 
+  //สุ่ม
   const rand = (arr,n)=>{
     const result = []
     for(let i = 0;i < n;i++){
@@ -92,42 +126,37 @@ function Slot() {
     return result 
   }
   
+  //สุ่มแบบล็อกPercent
   const cheatRand = (arr, n) => {
     if (winrate > 0 && Math.random() <= winrate/100) {
-      // If we should generate a winning combination
       while (true) {
         const tempResult = rand(symbol, 9);
-        // Need a version of checkwin that doesn't update state
         if (isWinningCombination(tempResult)) {
           return tempResult;
         }
       }
     } else {
-      // If we should generate a losing combination
       while (true) {
         const tempResult = rand(symbol, 9);
-        // Need a version of checkwin that doesn't update state
         if (!isWinningCombination(tempResult)) {
           return tempResult;
         }
       }
     }
   }
-  
-  // New function that just checks if a combination is winning without side effects
-  const isWinningCombination = (rolls) => {
-    // Check horizontal rows
+
+    const isWinningCombination = (rolls) => {
     if (rolls[0] === rolls[1] && rolls[1] === rolls[2]) return true;
     if (rolls[3] === rolls[4] && rolls[4] === rolls[5]) return true;
     if (rolls[6] === rolls[7] && rolls[7] === rolls[8]) return true;
     
-    // Check diagonals
     if (rolls[0] === rolls[4] && rolls[4] === rolls[8]) return true;
     if (rolls[2] === rolls[4] && rolls[4] === rolls[6]) return true;
     
     return false;
   }
 
+  //set ค่า bet
   const bet1 = ()=>{
     setBet(1)
   }
@@ -142,10 +171,12 @@ function Slot() {
     setCheat(!cheat)
   }
 
+  //set การตั้งค่าอัตราชนะ
   const changeWinrate = (e)=>{
     setWinrate(e.target.value)
   }
 
+  //ตรวจสอบการชนะ
   const checkwin = ()=>{
     if(rollRes[0] == rollRes[1] && rollRes[1] == rollRes[2]){
       setWincount(wincount + 1)
@@ -230,6 +261,7 @@ function Slot() {
     setProfit(income - outcome)
   }
 
+  //reset State ทั้งหมด
   const reset = ()=>{
     setSpin(false)
     setRollres(['🍒','🍋','🍉','🍊','🍇','🔔','🍒','🍋','🍉' ])
@@ -252,15 +284,24 @@ function Slot() {
       profits: [],
       labels: []
     });
+    setSymbolCounts({
+      '🍒': 0,
+      '🍋': 0,
+      '🍉': 0,
+      '🍊': 0,
+      '🍇': 0,
+      '🔔': 0
+    });
   }
 
+  //หมุน auto
   const autoSpin = (autoAmount) => {
     let remainingSpins = parseInt(autoAmount);
     setAuto(true);
       
     const performSpin = () => {
       if (remainingSpins <= 0) {
-        setAuto(false);  // Make sure to set auto to false when done
+        setAuto(false);
         return;
       }
         
@@ -276,7 +317,7 @@ function Slot() {
         if (remainingSpins > 0) {
           setTimeout(performSpin, 1);
         } else {
-          setAuto(false);  // Make sure to set auto to false when done
+          setAuto(false);
         }
       }, 1);
     };
@@ -288,16 +329,17 @@ function Slot() {
     return Array.from({ length: end - start }, (_, i) => start + i);
   }
 
-  Chart.register(LineController, LineElement, PointElement, LinearScale, CategoryScale);
+  Chart.register(LineController, LineElement, PointElement, LinearScale, CategoryScale,BarController,BarElement);
 
+  //ข้อมูล graph
   const data = {
     labels: graphData.labels,
     datasets: [
       {
         label: "Winrate",
         data: graphData.winrates,
-        borderColor: "white", // White line
-        backgroundColor: "rgba(255, 255, 255, 0.2)", // Light white fill
+        borderColor: "white", 
+        backgroundColor: "rgba(255, 255, 255, 0.2)", 
         borderWidth: 2,
         pointRadius: 0,
         fill: true,
@@ -311,11 +353,38 @@ function Slot() {
       {
         label: "Profit",
         data: graphData.profits,
-        borderColor: "white", // White line
-        backgroundColor: "rgba(255, 255, 255, 0.2)", // Light white fill
+        borderColor: "white", 
+        backgroundColor: "rgba(255, 255, 255, 0.2)",
         borderWidth: 2,
         pointRadius: 0,
         fill: true,
+      },
+    ],
+  };
+
+  const data3 = {
+    labels: Object.keys(symbolCounts),
+    datasets: [
+      {
+        label: 'Symbol Frequency',
+        data: Object.values(symbolCounts),
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.8)',  
+          'rgba(255, 206, 86, 0.8)',    
+          'rgba(75, 192, 192, 0.8)',    
+          'rgba(255, 159, 64, 0.8)',    
+          'rgba(153, 102, 255, 0.8)',   
+          'rgba(54, 162, 235, 0.8)', 
+        ],
+        borderColor: [
+          'rgba(255, 99, 132, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(255, 159, 64, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(54, 162, 235, 1)',
+        ],
+        borderWidth: 1,
       },
     ],
   };
@@ -326,73 +395,118 @@ function Slot() {
     plugins: {
       legend: {
         labels: {
-          color: "white", // Makes legend text white
+          color: "white", 
         },
       },
     },
     scales: {
       x: {
-        title: { display: true, text: "Index", color: "white" }, // White axis title
-        ticks: { stepSize: 1, color: "white" }, // White tick labels
-        grid: { color: "rgba(255, 255, 255, 0.2)" }, // Light white grid lines
+        title: { display: true, text: "Index", color: "white" }, 
+        ticks: { stepSize: 1, color: "white" }, 
+        grid: { color: "rgba(255, 255, 255, 0.2)" }, 
       },
       y: {
-        title: { display: true, text: "Winrate", color: "white" }, // White axis title
+        title: { display: true, text: "Winrate", color: "white" }, 
         min: 0,
         max: 100,
-        ticks: { stepSize: 10, color: "white" }, // White tick labels
-        grid: { color: "rgba(255, 255, 255, 0.2)" }, // Light white grid lines
+        ticks: { stepSize: 10, color: "white" }, 
+        grid: { color: "rgba(255, 255, 255, 0.2)" }, 
       },
     },
   };
-
   const options2 = {
     responsive: true,
     maintainAspectRatio: true,
     plugins: {
       legend: {
         labels: {
-          color: "white", // Make legend text white
+          color: "white",
         },
       },
     },
     scales: {
       x: {
-        title: { display: true, text: "Index", color: "white" }, // White axis title
-        ticks: { stepSize: 1, color: "white" }, // White tick labels
-        grid: { color: "rgba(255, 255, 255, 0.2)" }, // Light white grid lines
+        title: { display: true, text: "Index", color: "white" },
+        ticks: { stepSize: 1, color: "white" }, 
+        grid: { color: "rgba(255, 255, 255, 0.2)" }, 
       },
       y: {
-        title: { display: true, text: "Profit", color: "white" }, // White axis title
+        title: { display: true, text: "Profit", color: "white" }, 
         min: Math.min(...graphData.profits, 0),
         max: Math.max(...graphData.profits, 0) + 100,
-        ticks: { stepSize: 10, color: "white" }, // White tick labels
-        grid: { color: "rgba(255, 255, 255, 0.2)" }, // Light white grid lines
+        ticks: { stepSize: 10, color: "white" }, 
+        grid: { color: "rgba(255, 255, 255, 0.2)" }, 
       },
     },
   };
 
-  const payouts = [
-    { symbols: "🔔🔔🔔", bet1: 50, bet2: 100, bet3: 150 },
-    { symbols: "🍇🍇🍇", bet1: 25, bet2: 50, bet3: 75 },
-    { symbols: "🍉🍉🍉", bet1: 15, bet2: 30, bet3: 45 },
-    { symbols: "🍊🍊🍊", bet1: 10, bet2: 20, bet3: 30 },
-    { symbols: "🍋🍋🍋", bet1: 5, bet2: 10, bet3: 15 },
-    { symbols: "🍒🍒🍒", bet1: 3, bet2: 6, bet3: 9 },
-  ];
+  const options3 = {
+    responsive: true,
+    maintainAspectRatio: true,
+    plugins: {
+      legend: {
+        display: false,
+      },
+      tooltip: {
+        callbacks: {
+          label: function(context) {
+            const symbol = context.label;
+            const count = context.raw;
+            const percentage = rollscount * 9 > 0 
+              ? ((count / (rollscount * 9)) * 100).toFixed(2) 
+              : 0;
+            return `${symbol}: ${count} (${percentage}%)`;
+          }
+        }
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        title: {
+          display: true,
+          text: 'Frequency',
+          color: 'white',
+        },
+        ticks: {
+          color: 'white',
+        },
+        grid: {
+          color: 'rgba(255, 255, 255, 0.2)',
+        },
+      },
+      x: {
+        title: {
+          display: true,
+          text: 'Symbol',
+          color: 'white',
+        },
+        ticks: {
+          color: 'white',
+          font: {
+            size: 16,
+          }
+        },
+        grid: {
+          color: 'rgba(255, 255, 255, 0.2)',
+        },
+      },
+    },
+  };
 
+  //แสดงผล ( html , tailwind )
   return (
     <div className='grid grid-rows-3 md:grid-cols-3 gap-4'>
       <div className='mr-6 md:order-2'>  
         <img src='logoslot.png'/>
         <div className='relative my-[125px] mx-auto flex justify-center items-center'>
-          {/* Frame positioned around the slot */}
+          {}
           <img 
             src='/slotframe.png' 
             className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[512px] h-[512px] object-contain z-10 pointer-events-none'
           />
           
-          {/* Slot container with better centering */}
+          {}
           <div className='z-0 flex items-center justify-center'>
             <div className='flex flex-row justify-center ml-[37px] mt-[20px]'>
               <div className={`${spin ? "spinning bg-[url(/fruity.png)] bg-[center_-0px] bg-repeat-y" : "bg-white"} w-[80px] h-[265px]`}>
@@ -453,17 +567,32 @@ function Slot() {
       </div>
       <div className='flex flex-col justify-center md:order-3'>
         <div className='text-white bg-blue-500/30 backdrop-blur-md border border-blue-500/50 rounded-lg p-4'>
-          <p>income : {income}</p>
-          <p>outcome : {outcome}</p>
-          <p>profit : {profit}</p>
+          <div className='flex'>
+            <p className=''>income : {income}</p>
+            <p className='ml-4'>outcome : {outcome}</p>
+            <p className='ml-4'>profit : {profit}</p>
+          </div>
           <div className='w-[400px]'>
             <Line data={data2} options={options2} className='my-8'/>
           </div>
-          <p>rolls count : {rollscount}</p>
-          <p>win count : {wincount}</p>
-          <p>current winrate : {currentwinrate}%</p>
+          <div className='flex'>
+            <p>rolls count : <br />{rollscount}</p>
+            <p className='ml-4'>win count : <br />{wincount}</p>
+            <p className='ml-4'>current winrate : <br />{currentwinrate}%</p>
+          </div>
           <div className='w-[400px]'>
             <Line data={data} options={options} className='my-8'/>
+          </div>
+          <div className='flex pl-[75px]'>
+            <div className='w-[57px]'>{symbolCounts['🍒']}</div>
+            <div className='w-[57px]'>{symbolCounts['🍋']}</div>
+            <div className='w-[57px]'>{symbolCounts['🍉']}</div>
+            <div className='w-[57px]'>{symbolCounts['🍊']}</div>
+            <div className='w-[57px]'>{symbolCounts['🍇']}</div>
+            <div className='w-[57px]'>{symbolCounts['🔔']}</div>
+          </div>
+          <div className='w-[400px]'>
+            <Bar data={data3} options={options3} />
           </div>
           <button onClick={reset} className="bg-white text-black p-2 m-4 font-black outline outline-sky-500" type="button">reset</button>
         </div>
